@@ -60,7 +60,7 @@ class DKAssetGroupCell: UITableViewCell {
         return selectedBackgroundView
     }()
 
-    lazy var customSeparator: DKAssetGroupSeparator = {
+    lazy var customSeparator: DKAssetGroupSeparator = { [unowned self] in
         let separator = DKAssetGroupSeparator(frame: CGRect(x: 10, y: self.bounds.height - 1, width: self.bounds.width, height: 0.5))
 
         separator.backgroundColor = UIColor.lightGray
@@ -154,7 +154,7 @@ class DKAssetGroupListVC: UITableViewController, DKImageGroupDataManagerObserver
     
     init(groupDataManager: DKImageGroupDataManager,
          defaultAssetGroup: PHAssetCollectionSubtype?,
-         selectedGroupDidChangeBlock: @escaping (_ groupId: String?) -> ()) {
+         selectedGroupDidChangeBlock: @escaping (_ groupId: String?) -> ()) { 
         super.init(style: .plain)
         
         self.groupDataManager = groupDataManager

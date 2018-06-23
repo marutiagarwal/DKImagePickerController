@@ -44,7 +44,7 @@ open class DKAssetGroupDetailBaseCell: UICollectionViewCell, DKAssetGroupCellIte
                 }, completion: nil)
             } else {
                 UIView.animate(withDuration: 0.8, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 2, options: [.allowUserInteraction, .curveEaseInOut],
-                               animations: { 
+                               animations: { [unowned self] in
                                 self.transform = CGAffineTransform.identity
                 }, completion: nil)
             }
@@ -54,7 +54,7 @@ open class DKAssetGroupDetailBaseCell: UICollectionViewCell, DKAssetGroupCellIte
     // MARK: - Private methods
     
     @objc func longPress(gestureRecognizer: UIGestureRecognizer) {
-        if gestureRecognizer.state == .began {
+        if gestureRecognizer.state == .began { 
             self.longPressBlock?()
         }
     }

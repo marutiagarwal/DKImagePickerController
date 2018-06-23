@@ -73,7 +73,7 @@ public class DKImageDataManager {
                                                        targetSize: size,
                                                        contentMode: contentMode,
                                                        options: requestOptions,
-                                                       resultHandler: { image, info in
+                                                       resultHandler: {[unowned self] image, info in
                                                         self.update(requestID: requestID, with: info)
                                                         
                                                         if let info = info, let isCancelled = info[PHImageCancelledKey] as? NSNumber, isCancelled.boolValue {
@@ -113,7 +113,7 @@ public class DKImageDataManager {
         
         let requestOptions = options ?? self.imageRequestOptions
         let imageRequestID = self.manager.requestImageData(for: asset.originalAsset!,
-                                                           options: requestOptions) { (data, dataUTI, orientation, info) in
+                                                           options: requestOptions) {[unowned self] (data, dataUTI, orientation, info) in
                                                             self.update(requestID: requestID, with: info)
                                                             
                                                             if let info = info, let isCancelled = info[PHImageCancelledKey] as? NSNumber, isCancelled.boolValue {
@@ -153,7 +153,7 @@ public class DKImageDataManager {
         
         let requestOptions = options ?? self.videoRequestOptions
         let imageRequestID = self.manager.requestAVAsset(forVideo: asset.originalAsset!,
-                                                         options: requestOptions) { avAsset, audioMix, info in
+                                                         options: requestOptions) {[unowned self] avAsset, audioMix, info in
                                                             self.update(requestID: requestID, with: info)
                                                             
                                                             if let info = info, let isCancelled = info[PHImageCancelledKey] as? NSNumber, isCancelled.boolValue {

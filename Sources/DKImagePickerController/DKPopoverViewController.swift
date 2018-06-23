@@ -35,7 +35,7 @@ open class DKPopoverViewController: UIViewController {
     
     private class DKPopoverView: UIView {
         
-        var contentView: UIView! {
+        var contentView: UIView! { 
             didSet {
                 contentView.layer.cornerRadius = 5
                 contentView.clipsToBounds = true
@@ -131,7 +131,7 @@ open class DKPopoverViewController: UIViewController {
     override open func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         super.didRotate(from: fromInterfaceOrientation)
         
-        UIView.animate(withDuration: 0.2, animations: {
+        UIView.animate(withDuration: 0.2, animations: { [unowned self] in
             self.popoverView.frame = self.calculatePopoverViewFrame()
         })
     }
@@ -150,7 +150,7 @@ open class DKPopoverViewController: UIViewController {
         })
         
         self.popoverView.transform = self.popoverView.transform.translatedBy(x: 0, y: -(self.popoverView.bounds.height / 2)).scaledBy(x: 0.1, y: 0.1)
-        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.3, options: .allowUserInteraction, animations: {
+        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1.3, options: .allowUserInteraction, animations: { [unowned self] in
             self.popoverView.transform = CGAffineTransform.identity
             self.view.backgroundColor = UIColor(white: 0.4, alpha: 0.4)
         }, completion: nil)
@@ -159,10 +159,10 @@ open class DKPopoverViewController: UIViewController {
     @objc func dismiss() {
         self.preferredContentSizeObserver?.invalidate()
         
-        UIView.animate(withDuration: 0.2, animations: {
+        UIView.animate(withDuration: 0.2, animations: { [unowned self] in
             self.popoverView.transform = self.popoverView.transform.translatedBy(x: 0, y: -(self.popoverView.bounds.height / 2)).scaledBy(x: 0.01, y: 0.01)
             self.view.backgroundColor = UIColor.clear
-        }, completion: { result in
+        }, completion: { [unowned self] result in
             self.view.removeFromSuperview()
             self.removeFromParentViewController()
         })

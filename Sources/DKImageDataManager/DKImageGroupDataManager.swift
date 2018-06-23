@@ -230,7 +230,7 @@ open class DKImageGroupDataManager: DKImageBaseManager, PHPhotoLibraryChangeObse
         let assetGroupTypes = self.configuration.assetGroupTypes
         var insertedGroupIds: [String] = []
         
-        self.fetchGroups(assetGroupTypes: assetGroupTypes, block: { (collection) in
+        self.fetchGroups(assetGroupTypes: assetGroupTypes, block: { [unowned self] (collection) in
             if (self.groups![collection.localIdentifier] == nil) {
                 let assetGroup = self.makeDKAssetGroup(with: collection)
                 self.groups![assetGroup.groupId] = assetGroup

@@ -40,7 +40,7 @@ open class DKImageBaseManager: NSObject, DKImageBaseManagerObserver {
     
     open func notify(with selector: Selector, object: AnyObject?, objectTwo: AnyObject?) {
         if self.observers.count > 0 {
-            let block = {
+            let block = { [unowned self] in
                 for observer in self.observers.allObjects {
                     if observer.responds(to: selector) {
                         _ = observer.perform(selector, with: object, with: objectTwo)

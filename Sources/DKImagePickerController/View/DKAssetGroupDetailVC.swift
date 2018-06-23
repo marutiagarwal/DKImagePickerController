@@ -35,7 +35,7 @@ open class DKAssetGroupDetailVC: UIViewController,
     UIGestureRecognizerDelegate,
     UICollectionViewDelegate, UICollectionViewDataSource, DKImageGroupDataManagerObserver, DKImagePickerControllerObserver {
     	
-    public lazy var selectGroupButton: UIButton = {
+    public lazy var selectGroupButton: UIButton = { [unowned self] in
         let button = UIButton()
 		
         #if swift(>=4.0)
@@ -78,7 +78,7 @@ open class DKAssetGroupDetailVC: UIViewController,
 		self.view.addSubview(self.collectionView)
 		
 		self.footerView = self.imagePickerController.UIDelegate.imagePickerControllerFooterView(self.imagePickerController)
-		if let footerView = self.footerView {
+		if let footerView = self.footerView { 
 			self.view.addSubview(footerView)
 		}
       

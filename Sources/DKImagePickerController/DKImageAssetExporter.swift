@@ -165,7 +165,7 @@ open class DKImageAssetExporter: DKImageBaseManager {
         
         let requestID = self.getSeed()
         
-        let operation = BlockOperation {
+        let operation = BlockOperation { [unowned self] in
             guard let operation = self.operations[requestID] else {
                 return
             }
@@ -178,7 +178,7 @@ open class DKImageAssetExporter: DKImageBaseManager {
             let exportCompletionBlock: (DKAsset, Error?) -> Void = { asset, error in
                 exportedCount += 1
                 
-                defer {
+                defer { 
                     self.notify(with: #selector(DKImageAssetExporterObserver.exporterDidEndExporting(exporter:asset:)), object: self, objectTwo: asset)
                     
                     if exportedCount == assets.count {
@@ -237,7 +237,7 @@ open class DKImageAssetExporter: DKImageBaseManager {
                     continue
                 }
                 
-                self.exportAsset(with: asset, requestID: requestID, progress: { progress in
+                self.exportAsset(with: asset, requestID: requestID, progress: {[unowned self] progress in
                     asset.progress = progress
                     
                     self.notify(with: #selector(DKImageAssetExporterObserver.exporterDidUpdateProgress(exporter:asset:)), object: self, objectTwo: asset)
@@ -402,11 +402,11 @@ open class DKImageAssetExporter: DKImageBaseManager {
                 
                 let semaphore = DispatchSemaphore(value: 0)
                 
-                asset.fetchImageData(options: options, completeBlock: { (data, info) in
+                asset.fetchImageData(options: options, completeBlock: {[unowned self] (data, info) in
                     self.currentAssetInRequesting = nil
                     semaphore.signal()
                     
-                    DKImageAssetExporter.ioQueue.async {
+                    DKImageAssetExporter.ioQueue.async { [unowned self] in
                         if self.operations[requestID] == nil {
                             return completion(self.makeCancelledError())
                         }
@@ -483,7 +483,7 @@ open class DKImageAssetExporter: DKImageBaseManager {
         
         let semaphore = DispatchSemaphore(value: 0)
         
-        asset.fetchAVAsset(options: options) { (avAsset, info) in
+        asset.fetchAVAsset(options: options) {[unowned self] (avAsset, info) in
             self.currentAssetInRequesting = nil
             
             #if swift(>=4.0)
@@ -506,7 +506,7 @@ open class DKImageAssetExporter: DKImageBaseManager {
                 
                 semaphore.signal()
                 
-                DKImageAssetExporter.ioQueue.async {
+                DKImageAssetExporter.ioQueue.async { [unowned self] in
                     if self.operations[requestID] == nil {
                         return completion(self.makeCancelledError())
                     }

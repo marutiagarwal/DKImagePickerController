@@ -131,7 +131,7 @@ open class DKImagePickerController: UINavigationController, DKImageBaseManagerOb
     @objc public var exportStatusChanged: ((DKImagePickerControllerExportStatus) -> Void)?
     
     /// The object that acts as the data source of the picker.
-    @objc public private(set) lazy var groupDataManager: DKImageGroupDataManager = {
+    @objc public private(set) lazy var groupDataManager: DKImageGroupDataManager = { [unowned self] in
         let configuration = DKImageGroupDataManagerConfiguration()
         configuration.assetFetchOptions = self.createDefaultAssetFetchOptions()
         configuration.fetchLimit = self.fetchLimit
@@ -142,7 +142,7 @@ open class DKImagePickerController: UINavigationController, DKImageBaseManagerOb
     public private(set) var selectedAssetIdentifiers = [String]() // DKAsset.localIdentifier
     private var assets = [String : DKAsset]() // DKAsset.localIdentifier : DKAsset
     
-    private lazy var extensionController: DKImageExtensionController! = {
+    private lazy var extensionController: DKImageExtensionController! = { [unowned self] in
         return DKImageExtensionController(imagePickerController: self)
     }()
     
@@ -183,7 +183,7 @@ open class DKImagePickerController: UINavigationController, DKImageBaseManagerOb
         self.groupDataManager.invalidate()
     }
     
-    private lazy var doSetupOnce: () -> Void = {
+    private lazy var doSetupOnce: () -> Void = { [unowned self] in
         if self.UIDelegate == nil {
             self.UIDelegate = DKImagePickerControllerBaseUIDelegate()
         }
@@ -266,7 +266,7 @@ open class DKImagePickerController: UINavigationController, DKImageBaseManagerOb
     @objc open func dismiss() {
         self.cancelCurrentExportRequestIfNeeded()
         
-        self.presentingViewController?.dismiss(animated: true, completion: {
+        self.presentingViewController?.dismiss(animated: true, completion: { [unowned self] in
             self.didCancel?()
             
             if self.sourceType == .camera {
@@ -279,7 +279,7 @@ open class DKImagePickerController: UINavigationController, DKImageBaseManagerOb
     @objc open func done() {
         self.cancelCurrentExportRequestIfNeeded()
         
-        let completeBlock: ([DKAsset]) -> Void = { assets in
+        let completeBlock: ([DKAsset]) -> Void = {[unowned self] assets in
             self.exportStatus = .none
             
             self.didSelectAssets?(assets)
@@ -376,7 +376,7 @@ open class DKImagePickerController: UINavigationController, DKImageBaseManagerOb
             if let strongSelf = self {
                 strongSelf.metadataFromCamera = metadata
                 
-                let didFinishEditing: ((UIImage, [AnyHashable : Any]?) -> Void) = { (image, metadata) in
+                let didFinishEditing: ((UIImage, [AnyHashable : Any]?) -> Void) = { [weak self] (image, metadata) in
                     self?.processImageFromCamera(image, metadata)
                 }
                 
@@ -403,7 +403,7 @@ open class DKImagePickerController: UINavigationController, DKImageBaseManagerOb
                 let assetRequest = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: videoURL)
                 newVideoIdentifier = assetRequest?.placeholderForCreatedAsset?.localIdentifier
             }) { (success, error) in
-                DispatchQueue.main.async(execute: {
+                DispatchQueue.main.async(execute: { [unowned self] in
                     if success {
                         if let newAsset = PHAsset.fetchAssets(withLocalIdentifiers: [newVideoIdentifier], options: nil).firstObject {
                             if self.sourceType != .camera || self.viewControllers.count == 0 {
@@ -434,7 +434,7 @@ open class DKImagePickerController: UINavigationController, DKImageBaseManagerOb
     // MARK: - Capturing Image
     
     internal func processImageFromCamera(_ image: UIImage, _ metadata: [AnyHashable : Any]?) {
-        self.saveImage(image, metadata) { asset in
+        self.saveImage(image, metadata) { [unowned self] asset in
             if self.sourceType != .camera {
                 self.dismissCamera()
             }

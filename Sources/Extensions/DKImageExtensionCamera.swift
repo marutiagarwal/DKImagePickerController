@@ -34,9 +34,9 @@ open class DKImageExtensionCamera: DKImageBaseExtension {
     
     open func checkCameraPermission(_ camera: DKCamera) {
         func cameraDenied() {
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in 
                 let permissionView = DKPermissionView.permissionView(.camera,
-                                                                     withColors: self.context.imagePickerController.permissionViewColors)
+                                                                     withColors: (self?.context.imagePickerController.permissionViewColors)!)
                 camera.cameraOverlayView = permissionView
             }
         }
